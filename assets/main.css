@@ -1,0 +1,88 @@
+body {
+  font-family: "Courier New", Courier, monospace;
+}
+.header {
+  padding-top: 8rem;
+  padding-bottom: 4rem;
+}
+.title {
+  margin-bottom: 0.6rem;
+}
+.subtitle {
+  font-weight: normal;
+  margin-top: 0.6rem;
+}
+section.container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  /*text-align: justify;*/
+  /*text-justify: inter-word;*/
+  font-size: 0.85em;
+  line-height: 1.4em;
+}
+img.pixel-art {
+  width: 100%;
+}
+img.logo {
+  margin-top: 4rem;
+	margin-right: 0px;
+}
+@media (min-width: 40rem) {
+  .title {
+    margin-top: 8rem;
+  }
+  img.logo {
+    margin-top: 0;
+		width: 80%;
+  }
+}
+
+.title {
+	color: #e73c2b;
+}
+
+.row {
+  display: flex;
+  padding: 0;
+  flex-direction: row;
+  margin: 0 -1rem;
+  width: calc(100% + 2rem);
+	justify-content: space-between;
+}
+.row .column {
+  display: block;
+  flex: 1 1 auto;
+  margin-left: 0;
+  margin-bottom: inherit;
+  padding: 0 1rem;
+  max-width: 100%;
+  width: 100%;
+}
+
+#logo-container {
+	text-align: right;
+}
+
+h2 {
+	margin-top: 2em; 
+}
+
+.ctfname {
+	color: #e73c2b;
+	list-style-type:none;
+	margin: 5;
+}
+
+.ctfbullet {
+	list-style-type:none;
+}
+
+.ctfbullet ul {
+	list-style-type:none;
+	margin: 0;
+}
+
+.ctfbullet ul li::before {
+	list-style-type:none;
+	content: '-';
+}

@@ -1,0 +1,130 @@
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="polygl0ts, CTF, team, EPFL" />
+	<meta name="author" content="polygl0ts" />
+	<meta name="description" content="The polygl0ts CTF team page" />
+	<title>polygl0ts</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="apple-touch-icon" sizes="180x180" href="../../../../assets/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../../../../assets/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../../../../assets/favicon-16x16.png">
+	<link rel="stylesheet" href="../../../../assets/normalize.css" />
+	<link rel="stylesheet" href="../../../../assets/concrete.css" />
+	<link rel="stylesheet" href="../../../../assets/main.css" />
+	<link rel="stylesheet" href="../../../../assets/code-theme.css" />
+	<meta name="theme-color" content="#ee252c" />
+</head>
+
+<html lang="">
+	<body class="">
+		
+<header class="container header">
+	<div class="row">
+		<div class="column">
+			<h1 class="title">polygl0ts</h1>
+			<h3 class="subtitle">EPFL's CTF team</h3>
+			<p class="menu">
+				<a class="button"  href="../../../../index-2.html">Home</a>
+				<a class="button"  href="../../../../about.html">About</a>
+				<a class="button"  id="active"  href="../../../../writeups.html">Writeups</a>
+				<a class="button"  href="../../../../contact.html">Contact</a>
+				<a class="button"  href="../../../../events.html">Events</a>
+			</p>
+		</div>
+		<div class="column" id="logo-container">
+			<img class="pixel-art logo" src="../../../../assets/logo.svg" />
+		</div>
+	</div>
+</header>
+
+		<section class="container" markdown="1">
+			<h1 id="emojihell">emojihell</h1>
+<h1 id="insomnihack-2022-emojihell">Insomnihack 2022: EmojiHell</h1>
+
+<h2 id="description">Description</h2>
+<p>In this challenge, we are provided with <a href="ThinkingEmoji.py">a Python program</a>,
+along with <a href="output.txt">the output it generated when passed the flag.</a> To
+start, we break down the program to see what it does.</p>
+
+<p>First, it seeds the RNG with a secret value and uses it to define a one-to-one
+mapping between the numbers <code class="language-plaintext highlighter-rouge">00-99</code> and the 100 emojis in its code alphabet.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">perms</span> <span class="o">=</span> <span class="p">...</span>  <span class="c1"># 100 distinct emojis
+</span><span class="n">perms</span> <span class="o">=</span> <span class="n">perms</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="s">" "</span><span class="p">,</span><span class="s">""</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span>
+<span class="n">perms</span> <span class="o">=</span> <span class="s">''</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="p">.</span><span class="n">sample</span><span class="p">(</span><span class="n">perms</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">perms</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<p>Second, it uses that mapping to create a simple substitution cipher where every
+pair of decimal digits in a number is replaced with an emoji. We will need to
+figure out that cipher to obtain the flag.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">perms</span><span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="mi">100</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">bigInt2Emoji</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+	<span class="n">output</span> <span class="o">=</span> <span class="s">""</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+		<span class="n">output</span> <span class="o">+=</span> <span class="n">int2Emoji</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]))</span>
+	<span class="k">return</span> <span class="n">output</span>
+</code></pre></div></div>
+
+<p>Third, it computes some values and shows them through the substitution cipher.
+More precisely, it goes through every number between 0 and 99 in a random order
+and prints the number, its square, its cube, its fourth and fifth powers, and
+its product with its predecessor.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">random</span><span class="p">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="mi">100</span><span class="p">):</span>
+	<span class="k">print</span><span class="p">(</span><span class="n">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="n">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="o">**</span><span class="mi">3</span><span class="p">),</span><span class="n">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="o">**</span><span class="mi">4</span><span class="p">),</span><span class="n">int2Emoji</span><span class="p">(</span><span class="n">i</span><span class="o">**</span><span class="mi">5</span><span class="p">),</span> <span class="n">int2Emoji</span><span class="p">((</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">i</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Finally, it shows some values that are computed based on the flag.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">intMsg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">),</span> <span class="n">byteorder</span><span class="o">=</span><span class="s">'big'</span><span class="p">)</span>
+
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+<span class="k">while</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="n">intMsg</span> <span class="ow">or</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="n">intMsg</span><span class="o">&gt;&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="n">intMsg</span><span class="p">)</span>
+	<span class="n">b</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="n">intMsg</span><span class="o">&gt;&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="n">intMsg</span><span class="p">)</span>
+	<span class="n">c</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="n">intMsg</span><span class="o">&gt;&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="n">intMsg</span><span class="p">)</span>
+	<span class="n">d</span> <span class="o">=</span> <span class="n">intMsg</span><span class="o">-</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="o">-</span><span class="n">c</span>
+
+<span class="k">print</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bigInt2Emoji</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bigInt2Emoji</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bigInt2Emoji</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bigInt2Emoji</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="solution">Solution</h2>
+<p>Since we know exactly which items the sample contains, but not in which order,
+we perform frequency analysis on the sample. If an emoji has a unique occurence
+count, we can match it with a number. This decodes 4 emojis out of 100.</p>
+
+<p>Next, we use the structure of the sample to build pairs of emojis for which
+we know that second emoji maps to the square modulo 100 of the first. We do the
+same for cubes and other sampled relations. We then do the simple case: if the
+first item is already decoded, we directly compute the second item and infer
+that it is mapped to the emoji. We repeat that process until we can no longer
+find new decodes. We can crack 24 new emojis that way.</p>
+
+<p>The next step is to try to go from the second element to the first. This is
+more challenging since in this algebra, an element can have multiple square
+roots (respectively cubic, etc.). To do so, we maintain a set of candidate
+values for each undecoded emoji that initially contain every emoji. Then we
+iterate through every relation and remove candidates that don’t satisfy the
+equation. If at the end of the process an emoji is left with a single
+candidate, this is a match. By doing this iteratively we get all but 10 emojis.</p>
+
+<p>Finally, we go back in our solution to insert some manual guesses. The solution
+can automatically reject a guess if it leads to a contradiction. With just 2
+guesses, we found the full substitution.</p>
+
+<h2 id="flag">Flag</h2>
+<p><code class="language-plaintext highlighter-rouge">INS{😿😾🙀😹😺😸😻😼😀🤣😄😅😆😊😁😂}</code></p>
+
+<h2 id="code">Code</h2>
+<p>You can find the code for our solution <a href="solve.py">here</a>.</p>
+
+
+		</section>
+	</body>
+</html>

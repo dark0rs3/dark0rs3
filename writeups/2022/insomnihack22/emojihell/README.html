@@ -95,28 +95,32 @@ its product with its predecessor.</p>
 </code></pre></div></div>
 
 <h2 id="solution">Solution</h2>
-<p>Since we know exactly which items the sample contains, but not in which order,
-we perform frequency analysis on the sample. If an emoji has a unique occurence
-count, we can match it with a number. This decodes 4 emojis out of 100.</p>
+<p>Since we know exactly which items are in the sample, 
+	but not their order, we conduct a frequency analysis.
+	 If an emoji has a unique occurrence count, we can assign it a number.
+	  This allows us to decode 4 emojis out of 100.</p>
 
-<p>Next, we use the structure of the sample to build pairs of emojis for which
-we know that second emoji maps to the square modulo 100 of the first. We do the
-same for cubes and other sampled relations. We then do the simple case: if the
-first item is already decoded, we directly compute the second item and infer
-that it is mapped to the emoji. We repeat that process until we can no longer
-find new decodes. We can crack 24 new emojis that way.</p>
+<p>Next, we leverage the structure of the sample to create pairs of emojis
+	 where the second emoji corresponds to the square modulo 100 of the first.
+	  We repeat this for cubes and other sampled relations. In the simplest case,
+	   if the first item is already decoded, 
+	   we can directly compute the second item and conclude that it maps to the emoji.
+	    We continue this process until we can no longer find new decodings,
+		 successfully uncovering 24 additional emojis.</p>
 
-<p>The next step is to try to go from the second element to the first. This is
-more challenging since in this algebra, an element can have multiple square
-roots (respectively cubic, etc.). To do so, we maintain a set of candidate
-values for each undecoded emoji that initially contain every emoji. Then we
-iterate through every relation and remove candidates that don’t satisfy the
-equation. If at the end of the process an emoji is left with a single
-candidate, this is a match. By doing this iteratively we get all but 10 emojis.</p>
+<p>The next phase involves attempting to determine the first element from the second.
+	 This is more complex because, in this algebra,
+	 an element can have multiple square roots (and likewise for cubes, etc.). 
+	 To tackle this, we maintain a set of candidate values for each undecoded emoji,
+	  initially including every emoji. 
+	  We then examine each relation and eliminate candidates that don’t meet the equation's criteria.
+	   If, at the end of this process, an emoji is left with only one candidate,
+	   we have a match. By performing this iteratively,
+	    we decode all but 10 emojis.</p>
 
-<p>Finally, we go back in our solution to insert some manual guesses. The solution
-can automatically reject a guess if it leads to a contradiction. With just 2
-guesses, we found the full substitution.</p>
+<p>Finally, we revisit our findings to incorporate some manual guesses.
+	 The solution can automatically dismiss a guess if it results in a contradiction.
+	  With just 2 guesses, we successfully uncovered the complete substitution.</p>
 
 <h2 id="flag">Flag</h2>
 <p><code class="language-plaintext highlighter-rouge">INS{😿😾🙀😹😺😸😻😼😀🤣😄😅😆😊😁😂}</code></p>
